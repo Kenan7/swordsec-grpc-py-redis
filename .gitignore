@@ -1,0 +1,6 @@
+*.pyc
+
+env
+
+# the fork
+challenge-questions
