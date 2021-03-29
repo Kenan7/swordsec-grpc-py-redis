@@ -57,5 +57,15 @@ services:
     #     networks:
     #         - microservices
 
+
+    rq-dashboard:
+        image: jaredv/rq-docker:0.0.2 
+        command: rq-dashboard -H rq-server
+        ports:
+        - 9181:9181
+        
+        networks:
+            - microservices
+
 networks:
     microservices:
