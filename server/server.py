@@ -1,4 +1,5 @@
 import json
+import logging as log
 import random
 from concurrent import futures
 from datetime import datetime
@@ -15,6 +16,8 @@ from rq import Queue
 import users_pb2_grpc
 from users_pb2 import UserResponse
 
+log.basicConfig(level=log.DEBUG)
+
 redis_client = Redis(port=6379)
 
 q = Queue(connection=redis_client)
@@ -24,10 +27,12 @@ class UsersService(users_pb2_grpc.UsersServicer):
     data = {}
 
     def process_incoming_request(self, _data):
-        print(_data)
+
         self.data.update(
             MessageToDict(_data)
         )
+
+        return UserResponse(status=True, message="ok")
 
     def write_to_json_file(self, file_name = 'default.json', _data = data):
 
@@ -36,13 +41,16 @@ class UsersService(users_pb2_grpc.UsersServicer):
 
 
 
-    def SendUserInfo(self, request_iterator, context):
-        q.enqueue(self.process_incoming_request, request_iterator)
+    def SendUserInfo(self, request, context):
+        log.info(f'incoming request -> {request}')
+        q.enqueue(self.process_incoming_request, request)
         
     
     def SendUserInfoClientStream(self, request_iterator, context):
 
         for request in request_iterator:
+            log.info(f'incoming request (client stream) -> {request}')
+
             q.enqueue(self.process_incoming_request, request)
 
         try:
@@ -74,7 +82,7 @@ def serve():
 
     server.start()
 
-    print("Listening...")
+    log.info("Server is listening...")
 
     server.wait_for_termination()
 
