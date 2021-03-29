@@ -15,8 +15,13 @@ class UsersStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SendUserInfo = channel.stream_unary(
+        self.SendUserInfo = channel.unary_unary(
                 '/Users/SendUserInfo',
+                request_serializer=users__pb2.UserRequest.SerializeToString,
+                response_deserializer=users__pb2.UserResponse.FromString,
+                )
+        self.SendUserInfoClientStream = channel.stream_unary(
+                '/Users/SendUserInfoClientStream',
                 request_serializer=users__pb2.UserRequest.SerializeToString,
                 response_deserializer=users__pb2.UserResponse.FromString,
                 )
@@ -26,7 +31,13 @@ class UsersServicer(object):
     """TODO -> convert this to Client Stream.
     """
 
-    def SendUserInfo(self, request_iterator, context):
+    def SendUserInfo(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendUserInfoClientStream(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -35,8 +46,13 @@ class UsersServicer(object):
 
 def add_UsersServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SendUserInfo': grpc.stream_unary_rpc_method_handler(
+            'SendUserInfo': grpc.unary_unary_rpc_method_handler(
                     servicer.SendUserInfo,
+                    request_deserializer=users__pb2.UserRequest.FromString,
+                    response_serializer=users__pb2.UserResponse.SerializeToString,
+            ),
+            'SendUserInfoClientStream': grpc.stream_unary_rpc_method_handler(
+                    servicer.SendUserInfoClientStream,
                     request_deserializer=users__pb2.UserRequest.FromString,
                     response_serializer=users__pb2.UserResponse.SerializeToString,
             ),
@@ -52,7 +68,7 @@ class Users(object):
     """
 
     @staticmethod
-    def SendUserInfo(request_iterator,
+    def SendUserInfo(request,
             target,
             options=(),
             channel_credentials=None,
@@ -62,7 +78,24 @@ class Users(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(request_iterator, target, '/Users/SendUserInfo',
+        return grpc.experimental.unary_unary(request, target, '/Users/SendUserInfo',
+            users__pb2.UserRequest.SerializeToString,
+            users__pb2.UserResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendUserInfoClientStream(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(request_iterator, target, '/Users/SendUserInfoClientStream',
             users__pb2.UserRequest.SerializeToString,
             users__pb2.UserResponse.FromString,
             options, channel_credentials,

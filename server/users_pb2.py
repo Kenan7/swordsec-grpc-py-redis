@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0busers.proto\"\xa6\x01\n\x0bUserRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x04 \x01(\t\x12\x11\n\tlast_name\x18\x05 \x01(\t\x12\x12\n\nip_address\x18\x06 \x01(\t\x12\x0e\n\x06gender\x18\x07 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x08 \x01(\t\x12\r\n\x05\x61gent\x18\t \x01(\t\"/\n\x0cUserResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t26\n\x05Users\x12-\n\x0cSendUserInfo\x12\x0c.UserRequest\x1a\r.UserResponse(\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0busers.proto\"\xa6\x01\n\x0bUserRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x04 \x01(\t\x12\x11\n\tlast_name\x18\x05 \x01(\t\x12\x12\n\nip_address\x18\x06 \x01(\t\x12\x0e\n\x06gender\x18\x07 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x08 \x01(\t\x12\r\n\x05\x61gent\x18\t \x01(\t\"/\n\x0cUserResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t2o\n\x05Users\x12+\n\x0cSendUserInfo\x12\x0c.UserRequest\x1a\r.UserResponse\x12\x39\n\x18SendUserInfoClientStream\x12\x0c.UserRequest\x1a\r.UserResponse(\x01\x62\x06proto3'
 )
 
 
@@ -179,12 +179,22 @@ _USERS = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=233,
-  serialized_end=287,
+  serialized_end=344,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendUserInfo',
     full_name='Users.SendUserInfo',
     index=0,
+    containing_service=None,
+    input_type=_USERREQUEST,
+    output_type=_USERRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SendUserInfoClientStream',
+    full_name='Users.SendUserInfoClientStream',
+    index=1,
     containing_service=None,
     input_type=_USERREQUEST,
     output_type=_USERRESPONSE,

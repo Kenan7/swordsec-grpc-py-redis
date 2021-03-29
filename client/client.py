@@ -13,7 +13,7 @@ from rq import Queue
 from users_pb2 import UserRequest, UserResponse
 from users_pb2_grpc import UsersStub
 
-q = Queue(connection=Redis(port=6333))
+q = Queue(connection=Redis(port=6379))
 
 users_host = os.getenv("USERS_HOST", "localhost")
 users_channel = grpc.insecure_channel(f"{users_host}:50051")
@@ -31,7 +31,7 @@ def process_users_from_json_files():
                 json_content = json.load(currently_opened_file)
                 
                 for user in json_content:
-                        yield user
+                    yield user
             except:
                 continue
 def main():
@@ -41,13 +41,13 @@ def main():
         try:
             request_to_remote = UserRequest(**_user)
 
-            p(f'client | req -> {request_to_remote} (type) -> {type(request_to_remote)}')
+            # p(f'client | req -> {request_to_remote} (type) -> {type(request_to_remote)}')
 
             user_response = users_client.SendUserInfo(
                 request_to_remote
             )
 
-            p(f'client | response -> {user_response}')
+            # p(f'client | response -> {user_response}')
         except:
             continue
 

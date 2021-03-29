@@ -21,7 +21,8 @@ message UserResponse {
 
 // TODO -> convert this to Client Stream.
 service Users {
-    rpc SendUserInfo (stream UserRequest) returns (UserResponse);
+    rpc SendUserInfo (UserRequest) returns (UserResponse);
+    rpc SendUserInfoClientStream (stream UserRequest) returns (UserResponse);
 }
 
 // python -m grpc_tools.protoc \
