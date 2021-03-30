@@ -52,10 +52,14 @@ services:
 
     # rq-worker:
     #     image: jaredv/rq-docker:0.0.2
-    #     command: rq worker -u redis://localhost:6379 high normal low
+    #     command: rq worker -u redis://redis:6379 high normal low
 
     #     networks:
     #         - microservices
+
+    #     depends_on:
+    #         - redis
+
 
 
     rq-dashboard:
@@ -66,6 +70,9 @@ services:
         
         networks:
             - microservices
+
+        depends_on:
+            - redis
 
 networks:
     microservices:
