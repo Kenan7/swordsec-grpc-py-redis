@@ -6,8 +6,7 @@ import users_pb2 as users__pb2
 
 
 class UsersStub(object):
-    """TODO -> convert this to Client Stream.
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -28,8 +27,7 @@ class UsersStub(object):
 
 
 class UsersServicer(object):
-    """TODO -> convert this to Client Stream.
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def SendUserInfo(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -64,8 +62,7 @@ def add_UsersServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Users(object):
-    """TODO -> convert this to Client Stream.
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def SendUserInfo(request,

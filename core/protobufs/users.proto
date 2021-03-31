@@ -19,12 +19,7 @@ message UserResponse {
     string message = 2;
 }
 
-// TODO -> convert this to Client Stream.
 service Users {
     rpc SendUserInfo (UserRequest) returns (UserResponse);
     rpc SendUserInfoClientStream (stream UserRequest) returns (UserResponse);
 }
-
-// python -m grpc_tools.protoc \
-// -I ../protobufs --python_out=. \
-// --grpc_python_out=. ../protobufs/users.proto
