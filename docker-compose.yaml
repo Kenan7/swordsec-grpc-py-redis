@@ -21,6 +21,9 @@ services:
         depends_on:
             - server
 
+        env_file:
+            - core/.debug.env
+
     server:
         build:
             context: core # ./server
@@ -31,19 +34,20 @@ services:
 
         depends_on:
             - redis
+            - rq-worker
 
-    # worker:
-    #     build: worker # ./worker
+        env_file:
+            - core/.debug.env
+
+    # rq-worker:
+    #     build:
+    #         context: core # ./worker
+    #         dockerfile: docker/worker/Dockerfile 
 
     #     networks:
     #         - microservices
 
-    #     environment:
-    #         - REDIS_HOST=redis
-    #         - REDIS_PORT=6379
-
     #     depends_on:
-    #         - server
     #         - redis
 
     #  OR 👇🏻
@@ -57,21 +61,20 @@ services:
 
         depends_on:
             - redis
-            - server
 
 
 
-    # rq-dashboard:
-    #     image: jaredv/rq-docker:0.0.2 
-    #     command: rq-dashboard -H rq-server
-    #     ports:
-    #     - 9181:9181
+    rq-dashboard:
+        image: jaredv/rq-docker:0.0.2 
+        command: rq-dashboard -H redis
+        ports:
+            - 9999:9999
         
-    #     networks:
-    #         - microservices
+        networks:
+            - microservices
 
-    #     depends_on:
-    #         - redis
+        depends_on:
+            - redis
 
 networks:
     microservices:
