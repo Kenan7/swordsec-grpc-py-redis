@@ -1,9 +1,8 @@
-# COPY protobufs/ /service/protobufs/
 FROM python:3.8-slim
 
 
 RUN mkdir /service
-WORKDIR /service/server
+WORKDIR /service/client
 
 
 COPY requirements.txt .
@@ -15,5 +14,6 @@ COPY . .
 RUN python -m grpc_tools.protoc -I protobufs --python_out=. \
            --grpc_python_out=. protobufs/users.proto
 
+
 EXPOSE 50051
-ENTRYPOINT [ "python", "server.py" ]
+ENTRYPOINT [ "python", "client.py" ]

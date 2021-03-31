@@ -27,18 +27,21 @@ users_client = UsersStub(users_channel)
 def process_users_from_json_files():
 
     for json_file in Path('users').glob("*.json"):
-
-        with open(json_file, 'r') as currently_opened_file:
-            
-            # code below will pass on from 6.json file
-            try: 
+        log.info(json_file)
+        try:
+            with open(json_file, 'r') as currently_opened_file:
+                
+                # code below will pass on from 6.json file
                 json_content = json.load(currently_opened_file)
                 
                 for user in json_content:
-                    yield UserRequest(**user)
-            except:
-                continue
-
+                    try:
+                        yield user
+                    except:
+                        continue
+                
+        except:
+            continue                       
 
 def client_stream():
     try:
@@ -52,17 +55,21 @@ def client_stream():
 
 def main():
     log.info("Client initialized...")
-    for _user in process_users_from_json_files():
 
-        try:
-            user_response = users_client.SendUserInfo(
-                _user
-            )
+    with grpc.insecure_channel("127.0.0.1:50051") as channel:
+        stub = UsersStub(channel)
 
-            log.info(f"response (f server) | {user_response}")
+        for _user in process_users_from_json_files():
 
-        except:
-            continue
+            try:
+                user_response = stub.SendUserInfo(
+                    UserRequest(**_user)
+                )
+
+                log.info(f"response (f server) | {user_response}")
+
+            except:
+                continue
 
 
 if __name__ == "__main__":

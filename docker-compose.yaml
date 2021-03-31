@@ -11,68 +11,67 @@ services:
             - microservices
 
     client:
-        build: client # ./client
+        build:
+            context: core # ./client
+            dockerfile: docker/client/Dockerfile 
         
         networks:
             - microservices
-
-        volumes:
-            - ./protobufs:/service/protobufs
 
         depends_on:
             - server
 
     server:
-        build: server # ./server
+        build:
+            context: core # ./server
+            dockerfile: docker/server/Dockerfile 
         
         networks:
             - microservices
 
-        volumes:
-            - ./protobufs:/service/protobufs
-
         depends_on:
             - redis
 
-    worker:
-        build: worker # ./worker
+    # worker:
+    #     build: worker # ./worker
+
+    #     networks:
+    #         - microservices
+
+    #     environment:
+    #         - REDIS_HOST=redis
+    #         - REDIS_PORT=6379
+
+    #     depends_on:
+    #         - server
+    #         - redis
+
+    #  OR 👇🏻
+
+    rq-worker:
+        image: jaredv/rq-docker:0.0.2
+        command: rq worker -u redis://redis:6379 high normal low
 
         networks:
             - microservices
 
-        environment:
-            - REDIS_HOST=redis
-            - REDIS_PORT=6379
-
         depends_on:
-            - server
             - redis
+            - server
 
-    #  OR 👇🏻
 
-    # rq-worker:
-    #     image: jaredv/rq-docker:0.0.2
-    #     command: rq worker -u redis://redis:6379 high normal low
 
+    # rq-dashboard:
+    #     image: jaredv/rq-docker:0.0.2 
+    #     command: rq-dashboard -H rq-server
+    #     ports:
+    #     - 9181:9181
+        
     #     networks:
     #         - microservices
 
     #     depends_on:
     #         - redis
-
-
-
-    rq-dashboard:
-        image: jaredv/rq-docker:0.0.2 
-        command: rq-dashboard -H rq-server
-        ports:
-        - 9181:9181
-        
-        networks:
-            - microservices
-
-        depends_on:
-            - redis
 
 networks:
     microservices:

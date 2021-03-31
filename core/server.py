@@ -28,11 +28,12 @@ class UsersService(users_pb2_grpc.UsersServicer):
 
     def process_incoming_request(self, _data):
 
+        log.info(_data)
+
         self.data.update(
             MessageToDict(_data)
         )
 
-        return UserResponse(status=True, message="ok")
 
     def write_to_json_file(self, file_name = 'default.json', _data = data):
 
@@ -43,7 +44,13 @@ class UsersService(users_pb2_grpc.UsersServicer):
 
     def SendUserInfo(self, request, context):
         log.info(f'incoming request -> {request}')
-        q.enqueue(self.process_incoming_request, request)
+        # try:
+        #     q.enqueue(self.process_incoming_request, request)
+            
+        #     return UserResponse(status=True, message="ok")
+
+        # except:
+        #     return UserResponse(status=False, message="not ok")
         
     
     def SendUserInfoClientStream(self, request_iterator, context):
