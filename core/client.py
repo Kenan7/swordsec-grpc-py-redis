@@ -8,26 +8,28 @@ from pprint import pprint as p
 
 import grpc
 from google.protobuf.json_format import MessageToDict, MessageToJson
-from redis import Redis
-from rq import Queue
 
 from users_pb2 import UserRequest, UserResponse
 from users_pb2_grpc import UsersStub
 
 log.basicConfig(level=log.DEBUG)
 
-q = Queue(connection=Redis(port=6379))
 
-users_host = os.getenv("USERS_HOST", "localhost")
-users_channel = grpc.insecure_channel(f"{users_host}:50051")
-users_client = UsersStub(users_channel)
+SERVER_ADDRESS = f"{os.environ.get('GRPC_SERVER_ADDRESS', 'localhost')}:23333"
+
 
 
 
 def process_users_from_json_files():
 
     for json_file in Path('users').glob("*.json"):
-        log.info(json_file)
+
+        log.info(f'''
+
+            Processing the {json_file}...
+
+        ''')
+
         try:
             with open(json_file, 'r') as currently_opened_file:
                 
@@ -36,39 +38,63 @@ def process_users_from_json_files():
                 
                 for user in json_content:
                     try:
-                        yield user
+                        yield UserRequest(**user)
                     except:
                         continue
                 
-        except:
+        except Exception as e:
+            log.error(f'''
+
+                Could not process the file {json_file} -> {e}
+                
+            ''')
             continue                       
 
 def client_stream():
-    try:
-        users_client.SendUserInfo(
-            process_users_from_json_files()
-        )
+    with grpc.insecure_channel(SERVER_ADDRESS, options=(('grpc.enable_http_proxy', 0),)) as channel:
+        try:
+            stub = UsersStub(channel)
 
-    except:
-        pass
+            stub.SendUserInfo(
+                process_users_from_json_files()
+            )
+
+        except:
+            pass
 
 
 def main():
     log.info("Client initialized...")
+                                                  # thank you https://stackoverflow.com/a/63580067/10264246
+    with grpc.insecure_channel(SERVER_ADDRESS, options=(('grpc.enable_http_proxy', 0),)) as channel:
 
-    with grpc.insecure_channel("127.0.0.1:50051") as channel:
         stub = UsersStub(channel)
 
         for _user in process_users_from_json_files():
-
+            # time.sleep(1)           #  you may want to enable sleep to monitor logs
             try:
-                user_response = stub.SendUserInfo(
-                    UserRequest(**_user)
-                )
+                log.info(f'''
 
-                log.info(f"response (f server) | {user_response}")
+                    Sending data to the server -> {_user}
+                    
+                ''')
 
-            except:
+                user_response = stub.SendUserInfo(_user)
+
+
+                log.info(f'''
+                
+                    Received from the server -> {user_response}
+                
+                ''')
+
+            except Exception as e:
+                log.error(f'''
+                    Could not send the data -> {e}
+                    
+                    Continuing...
+                ''')
+
                 continue
 
 

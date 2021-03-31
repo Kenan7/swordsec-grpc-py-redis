@@ -2,7 +2,6 @@ FROM python:3.8-slim
 
 
 RUN mkdir /service
-
 WORKDIR /service/server
 
 
@@ -12,7 +11,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN bash -c 'ls -al'
 RUN python -m grpc_tools.protoc -I protobufs --python_out=. \
            --grpc_python_out=. protobufs/users.proto
 
