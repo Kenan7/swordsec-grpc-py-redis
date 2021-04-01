@@ -38,35 +38,61 @@ services:
 
         env_file:
             - core/.debug.env
-
-    # rq-worker:
+            
+    # consumer:
     #     build:
-    #         context: core # ./worker
-    #         dockerfile: docker/worker/Dockerfile 
-
+    #         context: core # ./consumer
+    #         dockerfile: docker/consumer/Dockerfile 
+        
     #     networks:
     #         - microservices
 
     #     depends_on:
     #         - redis
+    #         - rq-worker
+    #         - server
 
-    #  OR 👇🏻
+    #     env_file:
+    #         - core/.debug.env
 
-    rq-worker:
-        image: jaredv/rq-docker:0.0.2
-        command: rq worker -u redis://redis:6379 high normal low
+    consumer:
+        build:
+            context: core # ./consumer
+            dockerfile: docker/consumer/Dockerfile
 
         networks:
             - microservices
+
+        env_file:
+            - core/.debug.env
+
+        volumes:
+            - ./core:/service/consumer/
+
+        depends_on:
+            - redis
+            - rq-worker
+            - server
+
+
+    rq-worker:
+        build:
+            context: core # ./worker
+            dockerfile: docker/worker/Dockerfile
+
+        networks:
+            - microservices
+
+        env_file:
+            - core/.debug.env
 
         depends_on:
             - redis
 
 
-
     rq-dashboard:
         image: jaredv/rq-docker:0.0.2 
-        command: rq-dashboard -H redis
+        command: rq-dashboard --redis-url redis://redis:6379/0
         ports:
             - 9181:9181
         
@@ -78,3 +104,4 @@ services:
 
 networks:
     microservices:
+

@@ -15,19 +15,27 @@ from tasks import process_incoming_request
 from users_pb2 import UserResponse
 from users_pb2_grpc import UsersServicer, add_UsersServicer_to_server
 
-log.basicConfig(level=log.DEBUG)
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO').upper()
+log.basicConfig(level=LOG_LEVEL)
 
 
 SERVER_ADDRESS = f"{os.environ.get('GRPC_SERVER_ADDRESS', 'localhost')}:23333"
 REDIS_HOST = os.environ.get('REDIS_SERVER_ADDRESS', 'localhost')
+REDIS_QUEUE = os.environ.get('REDIS_QUEUE', 'def')
 
+print(REDIS_HOST)
+print(REDIS_QUEUE)
 
 q = Queue(
+    name=REDIS_QUEUE,
     connection=Redis(
         host=REDIS_HOST,
-        port=6379
+        db=0
     )
 )
+
+
+from icecream import ic
 
 
 class UsersService(UsersServicer):
@@ -49,7 +57,7 @@ class UsersService(UsersServicer):
         ''')
 
         try:
-            q.enqueue('process_incoming_request', MessageToDict(request))
+            job = q.enqueue('tasks.process_incoming_request', MessageToDict(request))
             
             return UserResponse(status=True, message="ok")
 
@@ -64,7 +72,7 @@ class UsersService(UsersServicer):
             for request in request_iterator:
                 log.info(f'incoming request (client stream) -> {request}')
 
-                q.enqueue('process_incoming_request', request)
+                job = q.enqueue('tasks.process_incoming_request',  MessageToDict(request))
 
             # q.enqueue(self.write_to_json_file, file_name='all_users.json')
             
@@ -93,7 +101,7 @@ def serve():
    
     server.add_insecure_port(SERVER_ADDRESS)
 
-    log.info("Server is listening...")
+    log.info(f"Server is listening on {SERVER_ADDRESS}")
 
     server.start()
 

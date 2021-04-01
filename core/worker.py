@@ -1,27 +1,31 @@
+import logging as log
 import os
 
-import redis
+from icecream import ic
+from redis import Redis
 from rq import Connection, Queue, Worker
 
-listen = ['default']
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
+log.basicConfig(level=LOG_LEVEL)
 
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
-redis_port = os.environ.get('REDIS_PORT', '6379')
+REDIS_HOST = os.environ.get('REDIS_SERVER_ADDRESS', 'localhost')
+REDIS_QUEUE = os.environ.get('REDIS_QUEUE', 'def')
 
+listen = ['high', 'default', 'low']
 
-conn = redis.Redis(
-    host = redis_host,
-    port = redis_port
-)
-
-conn = redis.Redis()
+connection = Redis(
+        host=REDIS_HOST,
+        db=0
+    )
 
 if __name__ == '__main__':
-    with Connection(conn):
-        
-        worker = Worker(
-            list(
-                map(Queue, listen)
-            )
-        )
+    with Connection(connection):
+        worker = Worker(map(Queue, listen))
         worker.work()
+        log.info(f'''
+        
+                WORKER: {ic(worker)}
+        
+        ''')
+
+
