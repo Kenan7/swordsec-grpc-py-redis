@@ -1,5 +1,11 @@
 # SwordSec backend task
 
+## Kurulum
+
+```bash
+docker-compose up --build --scale rq-worker=5
+```
+
 ## Protobufs
 
 UsersService de iki ana methodumuz var

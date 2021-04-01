@@ -1,13 +1,19 @@
 # SwordSec backend task
 
+## Running the app
+
+```bash
+docker-compose up --build --scale rq-worker=5
+```
+
 ## Protobufs
 
 There are two methods in UsersService
 
-- SendUserInfo (unary - unary)
+- `SendUserInfo` (unary - unary)
     - we send and receive single request-response here
 
-- SendUserInfoClientStream (stream - unary)
+- `SendUserInfoClientStream` (stream - unary)
     - we send multiple requests and receive single response form the server
 
 

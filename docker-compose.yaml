@@ -68,7 +68,7 @@ services:
         image: jaredv/rq-docker:0.0.2 
         command: rq-dashboard -H redis
         ports:
-            - 9999:9999
+            - 9181:9181
         
         networks:
             - microservices
