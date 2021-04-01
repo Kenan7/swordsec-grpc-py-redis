@@ -1,7 +1,6 @@
 import logging as log
 import os
 
-from icecream import ic
 from redis import Redis
 from rq import Connection, Queue, Worker
 
@@ -22,10 +21,10 @@ if __name__ == '__main__':
     with Connection(connection):
         worker = Worker(map(Queue, listen))
         worker.work()
-        log.info(f'''
+        # log.info(f'''
         
-                WORKER: {ic(worker)}
+        #         WORKER: {(worker)}
         
-        ''')
+        # ''')
 
 

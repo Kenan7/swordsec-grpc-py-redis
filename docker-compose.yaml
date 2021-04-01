@@ -39,21 +39,6 @@ services:
         env_file:
             - core/.debug.env
             
-    # consumer:
-    #     build:
-    #         context: core # ./consumer
-    #         dockerfile: docker/consumer/Dockerfile 
-        
-    #     networks:
-    #         - microservices
-
-    #     depends_on:
-    #         - redis
-    #         - rq-worker
-    #         - server
-
-    #     env_file:
-    #         - core/.debug.env
 
     consumer:
         build:

@@ -1,10 +1,30 @@
 # SwordSec backend task
 
+## Configuration
+
+for debugging purposes, there is a .debug.env file, it's best to not change server addresses
+
+but you can customize the LOG_LEVEL
+
+```env
+GRPC_SERVER_ADDRESS=server
+REDIS_SERVER_ADDRESS=redis
+LOG_LEVEL=DEBUG
+REDIS_QUEUE=default
+```
+
 ## Running the app
+
+```bash
+docker-compose up --build
+```
+
+with more workers
 
 ```bash
 docker-compose up --build --scale rq-worker=5
 ```
+
 
 ## Protobufs
 
@@ -17,7 +37,7 @@ There are two methods in UsersService
     - we send multiple requests and receive single response form the server
 
 
-```proto
+```proto3
 service Users {
     rpc SendUserInfo (UserRequest) returns (UserResponse);
     rpc SendUserInfoClientStream (stream UserRequest) returns (UserResponse);

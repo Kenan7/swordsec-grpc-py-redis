@@ -1,4 +1,3 @@
-import asyncio
 import json
 import logging as log
 import os
@@ -34,7 +33,8 @@ def file_operation(data):
             with open(current_file_path, 'a+') as current_file:
                 temp = json.load(current_file)
 
-            temp.append(data)
+            temp = data if not temp else temp.append(data)
+
         except Exception as e:
             print(e)
             temp = data
@@ -46,9 +46,17 @@ def file_operation(data):
             )
 
     else:
-        with open(current_file_path, 'w') as current_file:
-            json.dump(current_file, data, indent=4)
+        try:
+            with open(current_file_path, 'w') as current_file:
+                json.dump(current_file, data, indent=4)
 
+        except:
+            pass
+
+def remove_jobs(array):
+    finished_jobs = queue.finished_job_registry
+    for item in array:
+        finished_jobs.remove(item, delete_job=True)
 
 def consume():
     log.info('consuming...')
@@ -66,6 +74,8 @@ def consume():
                 pass
 
         file_operation(list_of_data)
+
+        # remove_jobs(jobs)
             
         time.sleep(2) # interval for file save operation
 

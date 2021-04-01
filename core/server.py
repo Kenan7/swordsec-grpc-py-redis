@@ -2,11 +2,10 @@ import json
 import logging as log
 import os
 from concurrent import futures
-from pprint import pprint as p
 from typing import Dict
 
 import grpc
-from google.protobuf.json_format import MessageToDict, MessageToJson
+from google.protobuf.json_format import MessageToDict
 from grpc_interceptor import ExceptionToStatusInterceptor
 from redis import Redis
 from rq import Queue
@@ -23,8 +22,7 @@ SERVER_ADDRESS = f"{os.environ.get('GRPC_SERVER_ADDRESS', 'localhost')}:23333"
 REDIS_HOST = os.environ.get('REDIS_SERVER_ADDRESS', 'localhost')
 REDIS_QUEUE = os.environ.get('REDIS_QUEUE', 'def')
 
-print(REDIS_HOST)
-print(REDIS_QUEUE)
+
 
 q = Queue(
     name=REDIS_QUEUE,
@@ -35,11 +33,8 @@ q = Queue(
 )
 
 
-from icecream import ic
-
 
 class UsersService(UsersServicer):
-
 
     def write_to_json_file(self, file_name = 'default.json', _data = {}):
 

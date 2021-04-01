@@ -3,10 +3,8 @@ import logging as log
 import os
 import time
 from pathlib import Path
-from pprint import pprint as p
 
 import grpc
-from google.protobuf.json_format import MessageToDict, MessageToJson
 
 from users_pb2 import UserRequest, UserResponse
 from users_pb2_grpc import UsersStub
@@ -71,7 +69,7 @@ def main():
 
         for _user in process_users_from_json_files():
 
-            # time.sleep(2)           #  you may want to enable sleep to monitor logs
+            time.sleep(2)           #  you may want to enable sleep to monitor logs
             try:
                 log.info(f'''
 
