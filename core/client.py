@@ -2,7 +2,6 @@ import json
 import logging as log
 import os
 import time
-from glob import glob
 from pathlib import Path
 from pprint import pprint as p
 
@@ -33,7 +32,6 @@ def process_users_from_json_files():
         try:
             with open(json_file, 'r') as currently_opened_file:
                 
-                # code below will pass on from 6.json file
                 json_content = json.load(currently_opened_file)
                 
                 for user in json_content:
@@ -49,6 +47,7 @@ def process_users_from_json_files():
                 
             ''')
             continue                       
+
 
 def client_stream():
     with grpc.insecure_channel(SERVER_ADDRESS, options=(('grpc.enable_http_proxy', 0),)) as channel:
@@ -71,6 +70,7 @@ def main():
         stub = UsersStub(channel)
 
         for _user in process_users_from_json_files():
+
             # time.sleep(2)           #  you may want to enable sleep to monitor logs
             try:
                 log.info(f'''

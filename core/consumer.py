@@ -60,11 +60,14 @@ def consume():
         list_of_data = []
 
         for job in jobs:
-            list_of_data.append(job.return_value)
+            try:
+                list_of_data.append(job.return_value)
+            except:
+                pass
 
         file_operation(list_of_data)
             
-        time.sleep(2)
+        time.sleep(2) # interval for file save operation
 
 
 if __name__ == '__main__':
