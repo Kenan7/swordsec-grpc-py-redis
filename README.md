@@ -1,5 +1,9 @@
 # SwordSec backend task
 
+## Demo (slowed down by time.sleep for monitoring)
+
+![demo.gif](demo/demo.gif)
+
 ## Configuration
 
 for debugging purposes, there is a .debug.env file, it's best to not change server addresses
